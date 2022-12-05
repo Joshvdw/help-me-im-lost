@@ -4,20 +4,33 @@ import {
   Circle,
   MeshReflectorMaterial,
   Icosahedron,
+  Box,
+  Plane,
+  OrbitControls,
+  useHelper
 } from "@react-three/drei";
+import { useMousePosition } from "../singleComponents/Hooks/useMousePosition";
 import { useFrame, useThree } from "@react-three/fiber";
 import useStore from "../singleComponents/Hooks/useStore";
 import { useTimeline } from "../singleComponents/Hooks/useTimeLine";
+import * as THREE from 'three'
+import { map_range } from "../singleComponents/Utils/Utils";
+import { Charles } from '../canvasComponents/Charles'
+import { Tree } from '../canvasComponents/Tree_1'
+
+const vector = new THREE.Vector3();
+const pos = new THREE.Vector3();
+const camPos = new THREE.Vector3();
 
 export default function ExampleScene(props: {
   setReveal: Dispatch<SetStateAction<boolean>>;
 }) {
-  let meshRef = useRef<THREE.Mesh>();
-  const { viewport, mouse } = useThree();
+  // let meshRef = useRef<THREE.Mesh>();
+  const { viewport } = useThree();
+  const mouse = useMousePosition();
 
   //Importing global scroll function
   const scroll = useStore((state) => state.scroll);
-
   const GPUTier = useStore((state) => state.GPUTier);
 
   //Keyframes for scroll based animations
@@ -39,13 +52,30 @@ export default function ExampleScene(props: {
   const [timeline, axes] = useTimeline(keyframes);
   const [timeRemap, timeAxe] = useTimeline(remapKeyframes);
 
-  useFrame(() => {
-    if (meshRef.current !== undefined) {
-      meshRef.current.rotateY((mouse.x * viewport.width) / 1500);
-      meshRef.current.rotateZ((mouse.y * viewport.height) / 1500);
-    }
+  const lightRef = useRef<THREE.SpotLight>(null!)
 
-    // scrubbing through the keyframes using the interpolated scroll value
+  // useHelper(lightRef, THREE.SpotLightHelper, 'red')
+  
+  const vec = new THREE.Vector3()
+
+  useFrame((state) => {
+    // gets mouse position accurately, in relation to the camera position 
+    vector.set(mouse.current.x, mouse.current.y, 0);
+    vector.unproject(state.camera); // unproject gets the camera position in relations to your device
+    state.camera.getWorldPosition(camPos); //  copy camera's position in the scene into the camPos vector
+    var dir = vector.sub(camPos).normalize(); 
+    const distance = -camPos.z / dir.z;
+    pos
+      .copy(camPos)
+      .add(
+        dir.multiplyScalar(distance + map_range(mouse.current.x, -1, 1, -1, -3))
+      );
+
+      lightRef.current.position.lerp(pos, 0.1)
+      lightRef.current.target.position.lerp(vec.set((state.mouse.x * viewport.width) / 2, (state.mouse.y * viewport.height) / 2, 0), 0.1)
+      lightRef.current.target.updateMatrixWorld()      
+
+      // scrubbing through the keyframes using the interpolated scroll value
     if (scroll?.animation.changed) {
       const y = scroll.get()[0];
       // @ts-ignore
@@ -62,7 +92,18 @@ export default function ExampleScene(props: {
   }, []);
   return (
     <>
-      <Circle
+    {/* <Plane scale={10}><meshStandardMaterial /></Plane> */}
+      <spotLight 
+        castShadow 
+        intensity={3} 
+        penumbra={1} 
+        ref={lightRef} 
+      />
+      <Charles />
+      <Tree />
+      <OrbitControls />
+      {/* <ambientLight /> */}
+      {/* <Circle
         args={[12.75, 36, 36]}
         rotation-x={-Math.PI / 2}
         position={[1, -1.7, 0]}
@@ -103,9 +144,8 @@ export default function ExampleScene(props: {
             roughness={1}
           />
         </Icosahedron>
-      </Float>
-
-      <pointLight position={[10, 10, 10]} power={800} />
+      </Float> */}
+      {/* <pointLight position={[10, 10, 10]} power={800} /> */}
     </>
   );
 }

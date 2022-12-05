@@ -9,7 +9,7 @@ import React, {
 import { Canvas, RootState, useFrame } from "@react-three/fiber";
 import ErrorBoundary from "../../singleComponents/ErrorBoundary/ErrorBoundary";
 import useStore from "../../singleComponents/Hooks/useStore";
-import ExampleScene from "../../Home/ExampleScene";
+import ExampleScene from "../../Home/Scene";
 import ErrorMessage from "../../singleComponents/ErrorBoundary/ErrorMessage";
 import { PerformanceMonitor } from "@react-three/drei";
 import AdaptPixelRatio from "../../singleComponents/Performance/AdaptPixelRatio";

@@ -16,7 +16,7 @@ const Home: NextPage = () => {
       </Head>
 
       <main className={styles.main}>
-        <h1 ref={fwdRef}>Next Three Boilerplate</h1>
+        {/* <h1 ref={fwdRef}>Next Three Boilerplate</h1> */}
       </main>
     </div>
   );
