@@ -10,7 +10,7 @@ export function Tree(props) {
   const { nodes, materials } = useGLTF('/glbs/Tree_1.glb')
   const material = new THREE.MeshStandardMaterial()
   return (
-    <group {...props} dispose={null}>
+    <group {...props} dispose={null} position={[2,0,0]}>
       <mesh geometry={nodes.tree_1.geometry} material={materials['Material.001']} position={[0, -0.1, 0]} rotation={[0, 0.84, 0]} />
       {/* <mesh geometry={nodes.tree_1.geometry} material={material} position={[0, -0.1, 0]} rotation={[0, 0.84, 0]} /> */}
     </group>

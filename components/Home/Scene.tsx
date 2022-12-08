@@ -1,4 +1,4 @@
-import React, { Dispatch, SetStateAction, useEffect, useRef } from "react";
+import React, { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
 import {
   Float,
   Circle,
@@ -63,7 +63,7 @@ export default function ExampleScene(props: {
     vector.set(mouse.current.x, mouse.current.y, 0);
     vector.unproject(state.camera); // unproject gets the camera position in relations to your device
     state.camera.getWorldPosition(camPos); //  copy camera's position in the scene into the camPos vector
-    var dir = vector.sub(camPos).normalize(); 
+    let dir = vector.sub(camPos).normalize(); 
     const distance = -camPos.z / dir.z;
     pos
       .copy(camPos)
@@ -90,6 +90,17 @@ export default function ExampleScene(props: {
   useEffect(() => {
     props.setReveal(true);
   }, []);
+
+  const [renderState, setrenderState] = useState(false)
+
+  setTimeout(() => {
+    setrenderState(true)
+  }, 5000);
+
+  const CharlesComponent = () => {
+    return renderState ? <Charles /> : <Box visible={false}/>
+  }
+
   return (
     <>
     {/* <Plane scale={10}><meshStandardMaterial /></Plane> */}
@@ -99,9 +110,11 @@ export default function ExampleScene(props: {
         penumbra={1} 
         ref={lightRef} 
       />
-      <Charles />
+      
+      <CharlesComponent />
+      {/* <Charles  /> */}
       <Tree />
-      <OrbitControls />
+      {/* <OrbitControls /> */}
       {/* <ambientLight /> */}
       {/* <Circle
         args={[12.75, 36, 36]}
