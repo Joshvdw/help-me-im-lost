@@ -1,14 +1,17 @@
 import React, { useRef, useEffect, useState } from 'react'
 import { useGLTF, useAnimations, Box, useHelper } from '@react-three/drei'
+import { useMousePosition } from "../singleComponents/Hooks/useMousePosition";
+import { map_range } from "../singleComponents/Utils/Utils";
 import * as THREE from 'three'
-import { useFrame } from '@react-three/fiber'
+import { useFrame, useThree } from '@react-three/fiber'
+
 
 export function Charles(props) {
   const group = useRef()
   const { nodes, materials, animations } = useGLTF('/glbs/Charles.glb')
   const { actions } = useAnimations(animations, group)
 
-  const lightRef = useRef()
+  const pointLightRef = useRef()
   // useHelper(lightRef, THREE.PointLightHelper)
 
   const [playState, setplayState] = useState(false)
@@ -36,12 +39,14 @@ export function Charles(props) {
       if(group.current.position.z <= targetPositionZ) {
         group.current.position.z += 0.06
       }
-      if(lightRef.current.intensity <= targetLightIntensity) {          
-        lightRef.current.intensity += 0.06
+      if(pointLightRef.current.intensity <= targetLightIntensity) {          
+        pointLightRef.current.intensity += 0.06
       }
       setTimeout(() => {
-        if(group.current.position.z <= (targetPositionZ + 5)) {
-          group.current.position.z += 0.06
+        if(group.current !== null) {
+          if(group.current.position.z <= (targetPositionZ + 5)) {
+            group.current.position.z += 0.06
+          }
         }
       }, 3000);
     }
@@ -54,7 +59,7 @@ export function Charles(props) {
         intensity={0} 
         penumbra={1} 
         position={[0,-.8,5.1]}
-        ref={lightRef}
+        ref={pointLightRef}
       />
       <group ref={group} {...props} dispose={null} rotation={[0,.05,0]} position={[0,-1.4,1]}>
         <Box args={[1,1.5,1]} position={[0,1,0]} onPointerEnter={playAnimation} visible={false}><meshBasicMaterial/></Box>

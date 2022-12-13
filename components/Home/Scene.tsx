@@ -7,7 +7,10 @@ import {
   Box,
   Plane,
   OrbitControls,
-  useHelper
+  useHelper,
+  Stats,
+  Environment,
+  useTexture
 } from "@react-three/drei";
 import { useMousePosition } from "../singleComponents/Hooks/useMousePosition";
 import { useFrame, useThree } from "@react-three/fiber";
@@ -17,6 +20,17 @@ import * as THREE from 'three'
 import { map_range } from "../singleComponents/Utils/Utils";
 import { Charles } from '../canvasComponents/Charles'
 import { Tree } from '../canvasComponents/Tree_1'
+import { Barrel } from "../canvasComponents/Barrel";
+import { Branches } from "../canvasComponents/Branches";
+import { Compost_Bags } from "../canvasComponents/Compost_Bags";
+import { House } from "../canvasComponents/House";
+import { Lantern } from "../canvasComponents/Lantern";
+import { Oil_Can } from "../canvasComponents/Oil_Can";
+import { Rocks } from "../canvasComponents/Rocks";
+import { Rocks_2 } from "../canvasComponents/Rocks_2";
+import { SpiderRock } from "../canvasComponents/SpiderRock";
+import { Teddy } from "../canvasComponents/Teddy";
+import { AxesHelper } from "three";
 
 const vector = new THREE.Vector3();
 const pos = new THREE.Vector3();
@@ -29,31 +43,7 @@ export default function ExampleScene(props: {
   const { viewport } = useThree();
   const mouse = useMousePosition();
 
-  //Importing global scroll function
-  const scroll = useStore((state) => state.scroll);
-  const GPUTier = useStore((state) => state.GPUTier);
-
-  //Keyframes for scroll based animations
-  const keyframes = {
-    rotation: [
-      { time: 0, val: 0 },
-      { time: 500, val: -100, easing: "easeInSine" },
-      { time: 1000, val: 100, easing: "easeInSine" },
-    ],
-  };
-
-  const remapKeyframes = {
-    frame: [
-      { time: 0, val: 0 },
-      { time: 1000, val: 1000, easing: "linear" },
-    ],
-  };
-
-  const [timeline, axes] = useTimeline(keyframes);
-  const [timeRemap, timeAxe] = useTimeline(remapKeyframes);
-
   const lightRef = useRef<THREE.SpotLight>(null!)
-
   // useHelper(lightRef, THREE.SpotLightHelper, 'red')
   
   const vec = new THREE.Vector3()
@@ -74,17 +64,6 @@ export default function ExampleScene(props: {
       lightRef.current.position.lerp(pos, 0.1)
       lightRef.current.target.position.lerp(vec.set((state.mouse.x * viewport.width) / 2, (state.mouse.y * viewport.height) / 2, 0), 0.1)
       lightRef.current.target.updateMatrixWorld()      
-
-      // scrubbing through the keyframes using the interpolated scroll value
-    if (scroll?.animation.changed) {
-      const y = scroll.get()[0];
-      // @ts-ignore
-      timeRemap.seek(timeRemap.duration * y);
-      // @ts-ignore
-      timeline.seek(timeAxe.current.frame);
-      // @ts-ignore
-      // meshRef.current?.rotateY(axes.current.rotation / 1500);
-    }
   });
 
   useEffect(() => {
@@ -95,27 +74,67 @@ export default function ExampleScene(props: {
 
   setTimeout(() => {
     setrenderState(true)
-  }, 5000);
+  }, 7500);
 
   const CharlesComponent = () => {
-    return renderState ? <Charles /> : <Box visible={false}/>
+    return renderState ? <Charles /> : <></>
   }
+
+  const terrain = useTexture({
+    map: '/textures/forest_leaves_03_diff_1k.jpg',
+    displacementMap: '/textures/forest_leaves_03_disp_1k.png',
+    aoMap: "/textures/forest_leaves_03_ao_1k.jpg",
+    roughnessMap: "/textures/forest_leaves_03_ao_1k.jpg",
+    metalnessMap: "/textures/forest_leaves_03_ao_1k.jpg",
+    normalMap: "/textures/forest_leaves_03_nor_gl_1k.jpg"
+    })
 
   return (
     <>
-    {/* <Plane scale={10}><meshStandardMaterial /></Plane> */}
+    {/* DEVELOPMENT */}
+    {/* <OrbitControls /> */}
+    {/* <axesHelper/> */}
+    {/* <ambientLight intensity={5} /> */}
+    {/* <Stats /> */}
+
       <spotLight 
         castShadow 
-        intensity={3} 
+        intensity={4} 
         penumbra={1} 
         ref={lightRef} 
+        // distance={50}
+
+        // decay={18}
       />
       
       <CharlesComponent />
-      {/* <Charles  /> */}
-      <Tree />
-      {/* <OrbitControls /> */}
-      {/* <ambientLight /> */}
+      <group position={[0,-1.45,0]}>
+        <Plane 
+          args={[20,30]}
+          position={[0,-2.7,0]}
+          // scale={10}
+          rotation-x={-Math.PI / 2}
+        >
+          <meshStandardMaterial 
+            side={THREE.DoubleSide} 
+            {...terrain}  
+            
+            normalMap-encoding={THREE.LinearEncoding}
+          />
+        </Plane>
+        <Tree />
+        <Barrel />
+        {/* <Branches /> */}
+        <Compost_Bags />
+        {/* <House /> */}
+        <Lantern position={[2,2,2]}/>
+        {/* <Oil_Can /> */}
+        {/* <Rocks /> */}
+        {/* <Rocks_2 /> */}
+        {/* <SpiderRock /> */}
+        {/* <Teddy /> */}
+      </group>
+
       {/* <Circle
         args={[12.75, 36, 36]}
         rotation-x={-Math.PI / 2}
