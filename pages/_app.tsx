@@ -61,10 +61,19 @@ function MyApp({ Component, pageProps }: AppProps) {
 
   return (
     <div className="app" ref={fwdRef}>
-      <div className={`preloader ${reveal && "reveal"}`}>
-        <h1 className={`loading ${show && "reveal"}`}>
-          {show ? null : "Loading"}
-        </h1>
+      <div className={`preloader ${reveal && "reveal"} `}>
+        <div className={`loader_logo`}>
+          <h1>Help me! Im lost!</h1>
+        </div>
+        <div
+          className={`${
+            show ? "loader_button_show" : "loader_button_not_show"
+          }`}
+        >
+          <button className="enter_btn" onClick={() =>{
+            setReveal(true)
+          }}>enter</button>
+        </div>
       </div>
       <ErrorBoundary fallback={<ErrorMessage />}>
         <CanvasWrapper fwdRef={fwdRef} setReveal={setReveal} />

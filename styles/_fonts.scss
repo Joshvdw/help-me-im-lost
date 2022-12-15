@@ -1,1 +1,6 @@
 @import "./variables";
+
+@font-face {
+  font-family: 'Danger';
+  src: local('Danger'),url(../public/fonts/danger.otf) format('opentype');
+}

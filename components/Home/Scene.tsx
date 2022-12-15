@@ -66,10 +66,6 @@ export default function ExampleScene(props: {
       lightRef.current.target.updateMatrixWorld()      
   });
 
-  useEffect(() => {
-    props.setReveal(true);
-  }, []);
-
   const [renderState, setrenderState] = useState(false)
 
   setTimeout(() => {
@@ -94,7 +90,7 @@ export default function ExampleScene(props: {
     {/* DEVELOPMENT */}
     {/* <OrbitControls /> */}
     {/* <axesHelper/> */}
-    {/* <ambientLight intensity={5} /> */}
+    {/* <ambientLight intensity={2} /> */}
     {/* <Stats /> */}
 
       <spotLight 
@@ -123,14 +119,16 @@ export default function ExampleScene(props: {
           />
         </Plane>
         <Tree />
-        <Barrel />
+        <group position={[-1.8,0,0.9]}>
+          <Barrel />
+          <Compost_Bags />
+        </group>
         {/* <Branches /> */}
-        <Compost_Bags />
         {/* <House /> */}
         <Lantern position={[2,2,2]}/>
-        {/* <Oil_Can /> */}
-        {/* <Rocks /> */}
-        {/* <Rocks_2 /> */}
+        <Oil_Can scale={5} position={[1.3,0,.8]}/>
+        <Rocks scale={.5} position={[1.3,0,.8]}/>
+        <Rocks_2 scale={.5} rotation={[0,1,0]} position={[-1.6,0,2]}/>
         {/* <SpiderRock /> */}
         {/* <Teddy /> */}
       </group>

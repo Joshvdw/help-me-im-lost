@@ -15,7 +15,7 @@ a {
 * {
   box-sizing: border-box;
   font-family: Helvetica, sans-serif;
-  cursor: url('/images/flashlight-icon.png'),auto !important;
+  // cursor: url('/images/flashlight-icon.png'),auto !important;
 }
 
 .canvas_wrapper {
@@ -28,11 +28,32 @@ a {
   cursor: url('/images/flashlight-icon.png'),auto !important;
 }
 
+.preloader {
+  cursor: default !important;
+}
+
 h1 {
   text-transform: uppercase;
-  letter-spacing: 1rem;
+  // letter-spacing: 1rem;
   color: rgb(210, 210, 228);
   text-align: center;
+}
+
+.enter_btn {
+  margin-top: 20px;
+  border: none;
+  border-bottom: .5px rgba(171, 170, 170, 1) solid;
+  background: transparent;
+  color: rgb(226, 224, 224, .85);
+  padding: 5px 5px;
+  cursor: pointer;     
+  outline: none;
+}
+
+h1 {
+    font-family: "Danger", serif;
+    letter-spacing: .3em;
+    font-size: 200%;
 }
 
 .error_message_container {
